@@ -731,7 +731,9 @@ class App(object):
                     decl = item.strip()
                     reduce_set.add(decl)
         
-        print len(reduce_set)
+        with open(preduce, "w") as f:
+            for item in reduce_set:
+                f.write(item+"\n")
 
         return True
 
