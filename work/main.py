@@ -46,6 +46,10 @@ def main():
     sub_irgen.add_argument("-i", "--input", action="append", default=None) 
     sub_irgen.add_argument("-f", "--force", action="store_true")
 
+    sub_listdecl = subs.add_parser("listdecl")
+    sub_listdecl.add_argument("-i", "--input", action="append", default=None) 
+    sub_listdecl.add_argument("-f", "--force", action="store_true")
+
     sub_group = subs.add_parser("group")
 
     sub_trans = subs.add_parser("trans")
@@ -80,6 +84,10 @@ def main():
         APP.parse()
     elif args.cmd == "irgen":
         APP.irgen(args.input, args.force)
+
+    elif args.cmd == "listdecl":
+        APP.listdecl(args.input, args.force)
+
     elif args.cmd == "group":
         APP.group()
     elif args.cmd == "trans":

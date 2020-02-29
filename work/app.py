@@ -50,6 +50,19 @@ def irgen_worker(work):
             LOG_ERR("IRGen fail")
             return False
 
+def listdecl_worker(work):
+    if not prepdn(work.out):
+        LOG_ERR("Preparing %s failed" % work.out)
+        return False
+    
+    with open(work.out, "w") as f:
+        if shell(work.cmd, out = f) == 0:
+            LOG_INF("listdecl done")
+            return True
+        else:
+            LOG_ERR("listdecl fail")
+            return False
+
 def group_worker(work):
     if not prepdn(work.out):
         LOG_ERR("Preparing %s failed" % work.out)
@@ -656,6 +669,73 @@ class App(object):
 
             try:
                 work = pool.map(irgen_worker, cmds)
+            except KeyboardInterrupt:
+                pool.terminate()
+                pool.join()
+
+        with open(self.path_log_irgen, "w") as f:
+            for i, r in enumerate(runs.keys()):
+                if work[i]:
+                    f.write("done %s\n" % srcs[i])
+                else:
+                    f.write("fail %s\n" % srcs[i])
+
+        return True
+
+    def listdecl(self, inputs, force):
+        psrc = self.path_srcs
+        if not exists(psrc):
+            LOG_ERR("Src path %s does not exist" % psrc)
+            return False
+        
+        pobj = self.path_objs
+        if not exists(pobj):
+            LOG_ERR("Obj path %s does not exist" % pobj)
+            return False
+
+        plog = self.path_log_parse
+        if not exists(plog):
+            LOG_ERR("Log path %s does not exist" % plog)
+            return False
+
+        pout = self.path_outs
+        if not mkdirs(pout):
+            LOG_WRN("IRGen cancelled")
+            return False
+        
+        f = open(plog, "r")
+        data = json.load(f, object_pairs_hook=OrderedDict)
+        f.close()
+        
+        if inputs is None:
+            runs = data 
+        else:
+            runs = OrderedDict()
+            for i in inputs:
+                runs[i] = data[i]
+
+        cmds = [] 
+        srcs = []
+
+        for r in runs:
+            if r[0] == "/":
+                red = resolve(pout, r[len(psrc)+1:])
+            else:
+                red = resolve(pout, r)
+
+            red = splitext(red)[0] + ".func"
+
+            cmd = PoolWork(True, red, "%s %s -Xclang -analyze -Xclang -analyzer-checker -Xclang alpha.unix.ListDecl -Wno-everything %s" % \
+                    ("/home/knlp/new_disk/build/bin/clang", runs[r], r))
+
+            cmds.append(cmd)
+            srcs.append(r)
+    
+        with cd(pobj):
+            pool = Pool(OPTS_NCPU, init_pool_worker) 
+
+            try:
+                work = pool.map(listdecl_worker, cmds)
             except KeyboardInterrupt:
                 pool.terminate()
                 pool.join()
