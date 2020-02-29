@@ -171,6 +171,10 @@ class App(object):
     @property
     def path_outs(self):
         return resolve(PATH_OUTS, self.full_name)
+    
+    @property
+    def path_reduce(self):
+        return resolve(PATH_REDUCE, self.full_name)
 
     @property
     def path_srcs(self):
@@ -686,6 +690,43 @@ class App(object):
 
         return True
 
+    def reduce_decl(self):
+        psrc = self.path_srcs
+
+        # listdecl dirs
+        pout = self.path_outs
+        if not exists(pout):
+            LOG_ERR("out path %s does not exist" % pout)
+            return False
+
+        # listdecl log
+        plog = self.path_log_listdecl
+        if not exists(plog):
+            LOG_ERR("Log path %s does not exist" % plog)
+            return False
+
+        # result file
+        preduce = self.path_reduce
+
+        outs = set()
+        with open(plog, "r") as f:
+            for l in f:
+                toks = l.strip().split(" ")
+                if toks[0] != "done":
+                    continue
+
+                r = toks[1]
+                if r[0] == "/":
+                    r = resolve(pout, r[len(psrc)+1:])
+                else:
+                    r = resolve(pout, r)
+                
+                r = splitext(r)[0] + ".func"
+                outs.add(r)
+                print r
+
+        return True
+
     def listdecl(self, inputs, force):
         psrc = self.path_srcs
         if not exists(psrc):
@@ -704,7 +745,7 @@ class App(object):
 
         pout = self.path_outs
         if not mkdirs(pout):
-            LOG_WRN("IRGen cancelled")
+            LOG_WRN("listdecl cancelled")
             return False
         
         f = open(plog, "r")
