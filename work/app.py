@@ -217,6 +217,10 @@ class App(object):
         return resolve(self.path_logs, "irgen.log")
 
     @property
+    def path_log_listdecl(self):
+        return resolve(self.path_logs, "listdecl.log")
+
+    @property
     def path_log_group(self):
         return resolve(self.path_logs, "group.log")
 
@@ -726,7 +730,7 @@ class App(object):
             red = splitext(red)[0] + ".func"
 
             cmd = PoolWork(True, red, "%s %s -Xclang -analyze -Xclang -analyzer-checker -Xclang alpha.unix.ListDecl -Wno-everything %s" % \
-                    ("/home/knlp/new_disk/build/bin/clang", runs[r], r))
+                    (LLVM_BIN_CLA, runs[r], r))
 
             cmds.append(cmd)
             srcs.append(r)
@@ -740,7 +744,7 @@ class App(object):
                 pool.terminate()
                 pool.join()
 
-        with open(self.path_log_irgen, "w") as f:
+        with open(self.path_log_listdecl, "w") as f:
             for i, r in enumerate(runs.keys()):
                 if work[i]:
                     f.write("done %s\n" % srcs[i])

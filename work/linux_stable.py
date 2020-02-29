@@ -42,7 +42,7 @@ FILTER = [
         
 # functions
 class APP_LINUX_STABLE(App):
-    def __init__(self, tag = "4.13.2"):
+    def __init__(self, tag = "5.5"):
         super(APP_LINUX_STABLE, self).__init__("linux-stable", tag, 
                 BUILDER, None)
 
@@ -72,7 +72,7 @@ class APP_LINUX_STABLE(App):
 
     def build_impl(self, psrc, pobj, pbin, pext, plog):
         with cd(pobj):
-            cmd = "make V=1 vmlinux modules"
+            cmd = "make V=1 vmlinux modules -j16"
             with open(plog, "w") as f:
                 if shell(cmd, out = f) == 0:
                     LOG_INF("Build done")
@@ -80,7 +80,7 @@ class APP_LINUX_STABLE(App):
                     LOG_ERR("Build failed")
                     return False
 
-            cmd = "make INSTALL_HDR_PATH=%s headers_install" % pbin
+            cmd = "make INSTALL_HDR_PATH=%s headers_install -j16" % pbin
             if shell(cmd) == 0:
                 LOG_INF("Install done")
             else:
