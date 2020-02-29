@@ -173,10 +173,6 @@ class App(object):
         return resolve(PATH_OUTS, self.full_name)
     
     @property
-    def path_reduce(self):
-        return resolve(PATH_REDUCE, self.full_name)
-
-    @property
     def path_srcs(self):
         return resolve(PATH_SRCS, self.full_name)
 
@@ -211,6 +207,10 @@ class App(object):
     @property
     def path_log_build(self):
         return resolve(self.path_logs, "build.log")
+
+    @property
+    def path_reduce(self):
+        return resolve(self.path_logs, "reduce"
 
     @property
     def path_log_parse(self):
