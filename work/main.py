@@ -50,6 +50,8 @@ def main():
     sub_listdecl.add_argument("-i", "--input", action="append", default=None) 
     sub_listdecl.add_argument("-f", "--force", action="store_true")
 
+    sub_reduce = subs.add_parser("reduce")
+
     sub_group = subs.add_parser("group")
 
     sub_trans = subs.add_parser("trans")
@@ -87,6 +89,8 @@ def main():
 
     elif args.cmd == "listdecl":
         APP.listdecl(args.input, args.force)
+    elif args.cmd == "reduce":
+        APP.reduce_decl()
 
     elif args.cmd == "group":
         APP.group()
