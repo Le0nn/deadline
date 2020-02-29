@@ -210,7 +210,7 @@ class App(object):
 
     @property
     def path_reduce(self):
-        return resolve(self.path_logs, "reduce"
+        return resolve(self.path_logs, "reduce")
 
     @property
     def path_log_parse(self):
