@@ -732,7 +732,7 @@ class App(object):
                     reduce_set.add(decl)
         
         with open(preduce, "w") as f:
-            for item in reduce_set:
+            for item in sorted(reduce_set):
                 f.write(item+"\n")
 
         return True
