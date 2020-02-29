@@ -723,7 +723,15 @@ class App(object):
                 
                 r = splitext(r)[0] + ".func"
                 outs.add(r)
-                print r
+
+        reduce_set = set()
+        for path in outs:
+            with open(path, "r") as f:
+                for item in f:
+                    decl = item.strip()
+                    reduce_set.add(decl)
+        
+        print len(reduce_set)
 
         return True
 
