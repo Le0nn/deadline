@@ -91,6 +91,12 @@ class APP_LINUX_STABLE(App):
 
     def parse_line(self, line):
         line = line.strip()
+
+        if "perl" in line:
+            return (False, None)
+        if "-static" in line:
+            return (False, None)
+
         toks = line.split(" ", 1)
         if toks[0] != "gcc":
             return (False, None)
