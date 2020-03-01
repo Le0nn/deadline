@@ -173,6 +173,10 @@ class App(object):
         return resolve(PATH_OUTS, self.full_name)
     
     @property
+    def path_funcs(self):
+        return resolve(PATH_OUTS, self.full_name)
+    
+    @property
     def path_srcs(self):
         return resolve(PATH_SRCS, self.full_name)
 
@@ -693,8 +697,8 @@ class App(object):
     def reduce_decl(self):
         psrc = self.path_srcs
 
-        # listdecl dirs
-        pout = self.path_outs
+        # funcs dirs
+        pout = self.path_funcs
         if not exists(pout):
             LOG_ERR("out path %s does not exist" % pout)
             return False
@@ -753,8 +757,8 @@ class App(object):
             LOG_ERR("Log path %s does not exist" % plog)
             return False
 
-        pout = self.path_outs
-        if not mkdirs(pout):
+        pfunc = self.path_funcs
+        if not mkdirs(pfunc):
             LOG_WRN("listdecl cancelled")
             return False
         
@@ -774,9 +778,9 @@ class App(object):
 
         for r in runs:
             if r[0] == "/":
-                red = resolve(pout, r[len(psrc)+1:])
+                red = resolve(pfunc, r[len(psrc)+1:])
             else:
-                red = resolve(pout, r)
+                red = resolve(pfunc, r)
 
             red = splitext(red)[0] + ".func"
 
@@ -814,7 +818,7 @@ class App(object):
 
         plog = self.path_log_links
         if not exists(plog):
-            LOG_ERR("Log path %s does not exist" % pmod)
+            LOG_ERR("Log path %s does not exist" % plog)
             return False
 
         pout = self.path_outs
