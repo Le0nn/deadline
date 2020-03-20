@@ -174,7 +174,7 @@ class App(object):
     
     @property
     def path_funcs(self):
-        return resolve(PATH_OUTS, self.full_name)
+        return resolve(PATH_FUNCS, self.full_name)
     
     @property
     def path_srcs(self):
